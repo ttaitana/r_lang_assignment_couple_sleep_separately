@@ -1,15 +1,30 @@
 ---
-title: "เธเธฒเธฃเธ—เธตเนเธเธเธกเธตเธเธนเนเนเธขเธเธเธฑเธเธเธญเธเธกเธตเธเธฅเธญเธขเนเธฒเธเนเธ"
+title: "การที่คนมีคู่แยกกันนอนมีผลอย่างไง"
 author: "60070028, 60070029"
 date: "April 18, 2019"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
+ชื่อ: นายตฤณภัทร ปลั่งศรี, นายไทธนา อยู่มี
+
+รหัสนักศึกษา: 60070028, 60070029
+
+เวลาเรียน: 9.00-12.00
+
+โจทย์ปัญหา:
+
+1.Which ages range has the most chance for sleeping apart?
+
+2.What are the top 5 factors for making couples want to sleep apart?
+
+ชุดข้อมูล fivethirtyeight: sleeping-alone
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Load ibraries
+## 1 Load libraries
 ```{r}
 library(plyr)
 library(tidyverse)
@@ -20,10 +35,14 @@ library(ggplot2)
 
 
 MyData <- read.csv(file="sleep-alone-data.csv", header=TRUE, sep=",")
-
+```
+## 2 Look at the data(sleep-alone)
+```{r}
+MyData
 ```
 
-## date prepare 1
+
+## 3 date prepare 1
 ```{r}
 MyData
 
@@ -37,20 +56,20 @@ sleep_age
 ```
 
 
-##date prepare 2
+## 4 date prepare 2
 ```{r}
 # sum of all value is 742
 
-ddt <- c(round(count(MyData %>% select(One.of.us.snores) %>% filter(One.of.us.snores != '-')) %>% pull(freq) / 742 * 100, 2),
-         round(count(MyData %>% select(Frequent.bathroom) %>% filter(Frequent.bathroom != '-')) %>% pull(freq) / 742 * 100, 2),
-         round(count(MyData %>% select(Sick) %>% filter(Sick != '-')) %>% pull(freq) / 742 * 100, 2),
-         round(count(MyData %>% filter(No.longer.physically.intimate != '-') %>% select(No.longer.physically.intimate)) %>% pull(freq) / 742 * 100, 2),
-         round(count(MyData %>% select(prefer.different.room.temperature) %>% filter(prefer.different.room.temperature != '-')) %>% pull(freq)/ 742 * 100, 2),
-         round(count(MyData %>% select(Argument.or.fight) %>% filter(Argument.or.fight != '-')) %>% pull(freq) / 742 * 100, 2),
-         round(count(MyData %>% select(Not.enough.space) %>% filter(Not.enough.space != '-')) %>% pull(freq) /742 * 100, 2),
-         round(count(MyData %>% select(Dont.want.to.share.the.covers) %>% filter(Dont.want.to.share.the.covers != '-')) %>% pull(freq) / 742 *100, 2),
-         round(count(MyData %>% select(Sleep.with.child) %>% filter(Sleep.with.child != '-')) %>% pull(freq) /742 * 100, 2),
-         round(count(MyData %>% select(Different.sleep.time) %>% filter(Different.sleep.time != '-')) %>% pull(freq) / 742 * 100, 2))
+ddt <- c(round(count(MyData %>% select(One.of.us.snores) %>% filter(One.of.us.snores != '-')) %>% pull(n) / 742 * 100, 2),
+         round(count(MyData %>% select(Frequent.bathroom) %>% filter(Frequent.bathroom != '-')) %>% pull(n) / 742 * 100, 2),
+         round(count(MyData %>% select(Sick) %>% filter(Sick != '-')) %>% pull(n) / 742 * 100, 2),
+         round(count(MyData %>% filter(No.longer.physically.intimate != '-') %>% select(No.longer.physically.intimate)) %>% pull(n) / 742 * 100, 2),
+         round(count(MyData %>% select(prefer.different.room.temperature) %>% filter(prefer.different.room.temperature != '-')) %>% pull(n)/ 742 * 100, 2),
+         round(count(MyData %>% select(Argument.or.fight) %>% filter(Argument.or.fight != '-')) %>% pull(n) / 742 * 100, 2),
+         round(count(MyData %>% select(Not.enough.space) %>% filter(Not.enough.space != '-')) %>% pull(n) /742 * 100, 2),
+         round(count(MyData %>% select(Dont.want.to.share.the.covers) %>% filter(Dont.want.to.share.the.covers != '-')) %>% pull(n) / 742 *100, 2),
+         round(count(MyData %>% select(Sleep.with.child) %>% filter(Sleep.with.child != '-')) %>% pull(n) /742 * 100, 2),
+         round(count(MyData %>% select(Different.sleep.time) %>% filter(Different.sleep.time != '-')) %>% pull(n) / 742 * 100, 2))
 sum(ddt)
 
 title <- c('One of us snores', 'Frequent bathroom', 'Sick', 'No longer physically intimate', 'prefer different room temperature', 'Argument or fight', 'Not enough space', 'Dont want to share the covers', 'Sleep with child', 'Different sleep time')
@@ -76,8 +95,10 @@ hyp3
 
 ```
 
+##สรุปผล:
+1.ช่วงอายุที่มีโอกาสแยกกันนอนมากที่สุดคือช่วงอายุ 45-60 ปี โดยมีช่วงอายุ 30-44 ปี และ มากกว่า 60 ตามมาจากกลุ่มตัวอย่าง
 
-## plot garph
+# plot garph1
 ```{r}
 
 
@@ -86,7 +107,10 @@ h1 <- ggplot(sleep_age, aes(Age)) + geom_bar(fill="#ff5959")
 h1
 ```
 
-## plot graph 2
+2.จากข้อมูลจากกราฟด้านล่างปัจจัยที่ทำให้คนส่วนใหญ่จากกลุ่มตัวอย่างแยกกันนอนคือ การนอนกรน อาการป่วย การนอนต่างเวลา การทะเลาะวิวาท และ การอาบน้ำที่บ่อยในเวลากลางคืน ตามลำดับ และยังสอดคล้องกับ 1 ในสมมุติฐานที่ได้มีการถามความเห็นจากกลุ่มตัวอย่างด้วย โดยวัดจากการที่คนในกลุ่มตัวอย่างที่ได้มีการเห็นด้วย นั่นก็คือสมมุติฐานที่บอกว่า "การแยกกันนอนจะทำให้ต่างฝ่ายหลับได้สบายยิ่งขึ้น" แตกต่างกับสมุติฐานอีก 2 สมมุติฐานที่กลุ่มตัวอย่างส่วนใหญ่จะแสดงความคิดเห็นไปในด้านไม่เห็นด้วย 
+
+
+# plot graph 2
 ```{r}
 
 #h2 <- ggplot(graph2, aes(One.of.us.snores, Frequent.bathroom, Sick, No.longer.physically.intimate, prefer.different.room.temperature, Argument.or.fight, Not.enough.space, Dont.want.to.share.the.covers, Sleep.with.child, Different.sleep.time)) + geom_bar(fill="#a2a8d3")
