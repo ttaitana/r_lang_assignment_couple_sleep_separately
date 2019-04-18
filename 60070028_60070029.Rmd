@@ -1,0 +1,110 @@
+---
+title: "การที่คนมีคู่แยกกันนอนมีผลอย่างไง"
+author: "60070028, 60070029"
+date: "April 18, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load ibraries
+```{r}
+library(plyr)
+library(tidyverse)
+library(fivethirtyeight)
+library(stringr)
+library(ggthemes)
+library(ggplot2)
+
+
+MyData <- read.csv(file="sleep-alone-data.csv", header=TRUE, sep=",")
+
+```
+
+## date prepare 1
+```{r}
+MyData
+
+sleep_age <- MyData %>%
+  filter(Age != "-", Age != "Response") %>%
+  select(Age)
+
+##summary(MyData)
+sleep_age
+  
+```
+
+
+##date prepare 2
+```{r}
+# sum of all value is 742
+
+ddt <- c(round(count(MyData %>% select(One.of.us.snores) %>% filter(One.of.us.snores != '-')) %>% pull(freq) / 742 * 100, 2),
+         round(count(MyData %>% select(Frequent.bathroom) %>% filter(Frequent.bathroom != '-')) %>% pull(freq) / 742 * 100, 2),
+         round(count(MyData %>% select(Sick) %>% filter(Sick != '-')) %>% pull(freq) / 742 * 100, 2),
+         round(count(MyData %>% filter(No.longer.physically.intimate != '-') %>% select(No.longer.physically.intimate)) %>% pull(freq) / 742 * 100, 2),
+         round(count(MyData %>% select(prefer.different.room.temperature) %>% filter(prefer.different.room.temperature != '-')) %>% pull(freq)/ 742 * 100, 2),
+         round(count(MyData %>% select(Argument.or.fight) %>% filter(Argument.or.fight != '-')) %>% pull(freq) / 742 * 100, 2),
+         round(count(MyData %>% select(Not.enough.space) %>% filter(Not.enough.space != '-')) %>% pull(freq) /742 * 100, 2),
+         round(count(MyData %>% select(Dont.want.to.share.the.covers) %>% filter(Dont.want.to.share.the.covers != '-')) %>% pull(freq) / 742 *100, 2),
+         round(count(MyData %>% select(Sleep.with.child) %>% filter(Sleep.with.child != '-')) %>% pull(freq) /742 * 100, 2),
+         round(count(MyData %>% select(Different.sleep.time) %>% filter(Different.sleep.time != '-')) %>% pull(freq) / 742 * 100, 2))
+sum(ddt)
+
+title <- c('One of us snores', 'Frequent bathroom', 'Sick', 'No longer physically intimate', 'prefer different room temperature', 'Argument or fight', 'Not enough space', 'Dont want to share the covers', 'Sleep with child', 'Different sleep time')
+title
+
+graph2 = data.frame('title' = title, 'amount' = ddt)
+graph2
+
+#graph2 <- data.frame(snores, bathroom, sick, intimate, temperature, fight, space, cover, child, time)
+
+
+```
+
+#date prepare
+```{r}
+
+hyp1 <- MyData %>% select(Hypothesis.1) %>% filter(!(Hypothesis.1 %in% c('-', 'Response')))
+hyp2 <- MyData %>% select(Hypothesis.2) %>% filter(!(Hypothesis.2 %in% c('-', 'Response')))
+hyp3 <- MyData %>% select(Hypothesis.3) %>% filter(!(Hypothesis.3 %in% c('-', 'Response')))
+hyp1
+hyp2
+hyp3
+
+```
+
+
+## plot garph
+```{r}
+
+
+h1 <- ggplot(sleep_age, aes(Age)) + geom_bar(fill="#ff5959")
+
+h1
+```
+
+## plot graph 2
+```{r}
+
+#h2 <- ggplot(graph2, aes(One.of.us.snores, Frequent.bathroom, Sick, No.longer.physically.intimate, prefer.different.room.temperature, Argument.or.fight, Not.enough.space, Dont.want.to.share.the.covers, Sleep.with.child, Different.sleep.time)) + geom_bar(fill="#a2a8d3")
+
+h2 <- ggplot(graph2, aes(x = reorder(title, amount), y = amount)) + geom_bar(fill="#49beb7", stat = "identity") + coord_flip() + labs(y = 'amount(%)') + geom_text(aes(label= sprintf("%.2f %%", amount), collapse = " "), vjust=0)
+h2
+
+```
+
+## plot graph 3
+```{r}
+
+h3 <- ggplot(hyp1, aes(Hypothesis.1)) + geom_bar(fill="#facf5a") + coord_flip() + labs(x= 'sleeping in separate beds helps us to stay together')
+h4 <- ggplot(hyp2, aes(Hypothesis.2)) + geom_bar(fill="#facf5a") + coord_flip() + labs(x='we sleep better when we sleep in separate beds.')
+h5 <- ggplot(hyp3, aes(Hypothesis.3)) + geom_bar(fill="#facf5a") + coord_flip() +labs(x = 'our sex life has improved as a result of sleeping in separate beds')
+
+h3
+h4
+h5
+
+```
